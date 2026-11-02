@@ -721,7 +721,7 @@ function wroomerSetMobileImage(img,url){
  if(!img)return;
  img.onerror=null;
  if(!matchMedia('(max-width: 767px)').matches){img.src=url;return;}
- const mobile=wroomerMobileImageUrl(url);
+ const mobile=url.includes('/storage/v1/object/public/ogloszenia/')?url.replace('/storage/v1/object/public/','/storage/v1/render/image/public/')+(url.includes('?')?'&':'?')+'width=800&quality=65&resize=contain':url;
  if(mobile===url){img.src=url;return;}
  img.onerror=()=>{img.onerror=null;img.src=url;};
  img.src=mobile;
@@ -1016,7 +1016,7 @@ async function loadAds(){
       const firstImage=Array.isArray(o.images)&&o.images.length?o.images[0]:Array.isArray(o.zdjecia)&&o.zdjecia.length?o.zdjecia[0]:null;
       const img=String(o.image_url||o.image||(typeof firstImage==='string'?firstImage:(firstImage?.url||firstImage?.src||firstImage?.image_url))||'');
       const safeImg=(()=>{try{const u=new URL(img);return (u.protocol==='https:'||u.protocol==='http:')?u.href:'';}catch{return '';}})();
-      const thumb=matchMedia('(max-width: 767px)').matches?wroomerMobileImageUrl(safeImg):(safeImg.includes('/storage/v1/object/public/ogloszenia/')?safeImg.replace('/storage/v1/object/public/','/storage/v1/render/image/public/')+(safeImg.includes('?')?'&':'?')+'width=480&quality=75&resize=contain':safeImg);
+      const thumb=matchMedia('(max-width: 767px)').matches?(safeImg.includes('/storage/v1/object/public/ogloszenia/')?safeImg.replace('/storage/v1/object/public/','/storage/v1/render/image/public/')+(safeImg.includes('?')?'&':'?')+'width=480&quality=65&resize=contain':safeImg):safeImg):(safeImg.includes('/storage/v1/object/public/ogloszenia/')?safeImg.replace('/storage/v1/object/public/','/storage/v1/render/image/public/')+(safeImg.includes('?')?'&':'?')+'width=480&quality=75&resize=contain':safeImg);
       const cnt=Array.isArray(o.images)&&o.images.length?o.images.length:Array.isArray(o.zdjecia)&&o.zdjecia.length?o.zdjecia.length:(o.image_url||o.image?1:0);
       const safeId=String(o.id||'').replace(/[^a-zA-Z0-9_-]/g,'');
       const safeListingText=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
